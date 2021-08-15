@@ -59,4 +59,4 @@ object RNG {
   def map2[A, B, C](ra: Rand[A], rb: Rand[B])(
       f: (A, B) => (Int, Double)
   ): Rand[(Int, Double)] = rng => ((1, 0.1), SimpleRNG(1))
-}
+
