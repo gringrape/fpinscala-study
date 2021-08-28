@@ -31,6 +31,10 @@ object RNG {
     ((num, num2), nextDobuleRNG)
   }
 
+  def randIntDouble(rng: RNG) = {
+    map2(nonNegativeInt, double)((_, _))(rng)
+  }
+
   def ints(count: Int)(rng: RNG) = {
     List
       .range(0, count)
@@ -57,6 +61,11 @@ object RNG {
   def _double: Rand[Double] = map(rng => rng.nextInt)(toDecimal)
 
   def map2[A, B, C](ra: Rand[A], rb: Rand[B])(
-      f: (A, B) => (Int, Double)
-  ): Rand[(Int, Double)] = rng => ((1, 0.1), SimpleRNG(1))
+      f: (A, B) => C
+  ): Rand[C] = rng => {
+    val (result, newRNG) = ra(rng)
+    val (result2, newRNG2) = rb(newRNG)
 
+    (f(result, result2), newRNG2)
+  }
+}
