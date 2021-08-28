@@ -19,6 +19,18 @@ class Test extends AnyFunSuite {
     )
   }
 
+  test("randIntDouble via map2") {
+    val largeNumber = "197491923327988"
+
+    val newRNG = SimpleRNG(largeNumber.toLong)
+
+    assert(
+      randIntDouble(preRNG) == (
+        (16159453, 0.5967354861072895), newRNG
+      )
+    )
+  }
+
   test("ints") {
     val largeNumber = "259172689157871"
 
@@ -49,9 +61,33 @@ class Test extends AnyFunSuite {
     )
   }
 
-  test("map2") {
-    val rand1: Rand[Int] = nonNegativeInt
-    val rand2 = _double
-    assert(map2(rand1, rand2)(_ + _) == ((1, 0.1), SimpleRNG(1)))
+  test("map2 - tuple") {
+    val rand1: Rand[Int] = nonNegativeInt // 음이 아닌 정수
+    val rand2 = _double // 소수
+
+    val rand3 = map2(rand1, rand2)((a, b) => (a, b))
+
+    val largeNumber = "206026503483683"
+
+    assert(
+      rand3(SimpleRNG(1)) == ((384748, -0.5360936464444239), SimpleRNG(
+        largeNumber.toLong
+      ))
+    )
+  }
+
+  test("map2 - plus") {
+    val rand1: Rand[Int] = nonNegativeInt // 음이 아닌 정수
+    val rand2 = _double // 소수
+
+    val rand3 = map2(rand1, rand2)(_ + _)
+
+    val largeNumber = "206026503483683"
+
+    assert(
+      rand3(SimpleRNG(1)) == ((384748 - 0.5360936464444239), SimpleRNG(
+        largeNumber.toLong
+      ))
+    )
   }
 }
